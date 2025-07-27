@@ -32,12 +32,11 @@ export default function Home() {
             />
             <div className="absolute bottom-3 left-3">
               <div className="flex flex-col items-center justify-center max-w-[200px]">
-                <h2 className="text-xs font-mono text-white text-start opacity-70 group-hover:opacity-100 transition-all duration-300">
+                <h2 className="text-xs font-mono font-normal text-white text-start md:opacity-70 opacity-100 group-hover:opacity-100 transition-all duration-300">
                   working on making work colourful.
                 </h2>
               </div>
             </div>
-            
           </div>
 
           <span className="text-end">Labs</span>
