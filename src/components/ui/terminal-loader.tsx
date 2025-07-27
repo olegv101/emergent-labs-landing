@@ -21,11 +21,11 @@ type TerminalLoaderProps = {
 
 const loadingSteps: LoadingStep[] = [
   { id: 1, text: 'Emergent Labs System v2.0.1', delay: 500 },
-  { id: 2, text: 'Initializing quantum processors...', delay: 800, status: 'loading' },
-  { id: 3, text: 'Loading neural networks...', delay: 600, status: 'loading' },
-  { id: 4, text: 'Calibrating emergence algorithms...', delay: 700, status: 'loading' },
-  { id: 5, text: 'Connecting to distributed consciousness...', delay: 900, status: 'loading' },
-  { id: 6, text: 'Synchronizing reality matrices...', delay: 600, status: 'loading' },
+  { id: 2, text: 'Initializing quantum processors...', delay: 800, status: 'success' },
+  { id: 3, text: 'Loading neural networks...', delay: 600, status: 'success' },
+  { id: 4, text: 'Calibrating emergence algorithms...', delay: 700, status: 'success' },
+  { id: 5, text: 'Connecting to distributed consciousness...', delay: 900, status: 'success' },
+  { id: 6, text: 'Synchronizing reality matrices...', delay: 600, status: 'success' },
   { id: 7, text: 'System ready. Welcome to the future.', delay: 500, status: 'success' },
 ];
 

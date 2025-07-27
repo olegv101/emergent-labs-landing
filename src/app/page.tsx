@@ -4,7 +4,8 @@ import { VT323 } from 'next/font/google';
 import Image from 'next/image';
 import { useState } from 'react';
 import { ProgressiveBlur } from '@/components/ui/progressive-blur';
-import { TerminalLoader } from '@/components/ui/terminal-loader';
+// import { TerminalLoader } from '@/components/ui/terminal-loader';
+import { SvgLoader } from '@/components/ui/svg-loader';
 
 const vt323 = VT323({
   weight: '400',
@@ -19,15 +20,16 @@ export default function Home() {
   };
 
   if (isLoading) {
-    return <TerminalLoader onComplete={handleLoadingComplete} />;
+    return <SvgLoader onComplete={handleLoadingComplete} />;
   }
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-[#E0E0E0] flex-col space-y-6 opacity-0 animate-fade-in'>
       <div className='flex flex-col items-center justify-center group'>
         <h1
-          className={`flex flex-col uppercase text-4xl font-bold text-[#2D2D2D] ${vt323.className}`}
+          className={`relative flex flex-col uppercase text-4xl font-bold text-[#2D2D2D] ${vt323.className}`}
         >
+
           <span className='text-start'>
             Emergent
           </span>
