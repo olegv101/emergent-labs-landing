@@ -68,7 +68,7 @@ export default function Home() {
                 Emergent
               </span>
 
-              <div className='relative my-4 overflow-hidden rounded-[4px] group-hover:scale-105 transition-all duration-300'>
+              <div className='relative my-2 overflow-hidden rounded-[4px] group-hover:scale-105 transition-all duration-300'>
                 
                 <Image
                   src='/background-emergent-labs.png'
