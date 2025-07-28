@@ -32,10 +32,12 @@ export default function Home() {
       <RainbowPulse maxRadius={400} minRadius={100} />
       
       {/* Metal Frame - positioned absolutely around viewport */}
-      <MetalFrame 
-        horizontalThickness="10vh"
-        verticalThickness="10vw"
-      />
+      <div className='hidden md:block'>
+        <MetalFrame 
+          horizontalThickness="10vh"
+          verticalThickness="10vw"
+        />
+      </div>
       
       <div className='min-h-screen flex items-center justify-center bg-[#E0E0E0] flex-col space-y-6 opacity-0 animate-fade-in relative'>
         {/* ASCII Animation Background */}
