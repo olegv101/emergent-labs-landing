@@ -150,3 +150,164 @@
     }
   }
 }
+
+/* Metal Frame Styles */
+.metal-frame-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.metal-frame {
+  position: absolute;
+  background: #E0E0E0;
+  box-shadow: 
+    /* Outer edge shadow for depth */
+    0 0 20px rgba(0, 0, 0, 0.1),
+    /* Inner shadow for frame depth */
+    inset 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Individual frame pieces with mitered corners */
+.metal-frame-top {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--frame-thickness-horizontal);
+  background: linear-gradient(
+    to bottom,
+    #E0E0E0 0%,
+    #E0E0E0 85%,
+    #D8D8D8 100%
+  );
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.05);
+  clip-path: polygon(
+    0 0,
+    var(--frame-thickness-vertical) var(--frame-thickness-horizontal),
+    calc(100% - var(--frame-thickness-vertical)) var(--frame-thickness-horizontal),
+    100% 0
+  );
+}
+
+.metal-frame-right {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--frame-thickness-vertical);
+  background: linear-gradient(
+    to left,
+    #E0E0E0 0%,
+    #E0E0E0 85%,
+    #D8D8D8 100%
+  );
+  box-shadow: 
+    -2px 0 4px rgba(0, 0, 0, 0.1),
+    inset 1px 0 2px rgba(0, 0, 0, 0.05);
+  clip-path: polygon(
+    100% 0,
+    0 var(--frame-thickness-horizontal),
+    0 calc(100% - var(--frame-thickness-horizontal)),
+    100% 100%
+  );
+}
+
+.metal-frame-bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--frame-thickness-horizontal);
+  background: linear-gradient(
+    to top,
+    #E0E0E0 0%,
+    #E0E0E0 85%,
+    #E8E8E8 100%
+  );
+  box-shadow: 
+    0 -2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  clip-path: polygon(
+    0 100%,
+    var(--frame-thickness-vertical) 0,
+    calc(100% - var(--frame-thickness-vertical)) 0,
+    100% 100%
+  );
+}
+
+.metal-frame-left {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--frame-thickness-vertical);
+  background: linear-gradient(
+    to right,
+    #E0E0E0 0%,
+    #E0E0E0 85%,
+    #E8E8E8 100%
+  );
+  box-shadow: 
+    2px 0 4px rgba(0, 0, 0, 0.1),
+    inset -1px 0 2px rgba(255, 255, 255, 0.5);
+  clip-path: polygon(
+    0 0,
+    100% var(--frame-thickness-horizontal),
+    100% calc(100% - var(--frame-thickness-horizontal)),
+    0 100%
+  );
+}
+
+/* Subtle inner frame line for painting frame effect */
+.metal-frame-top::after,
+.metal-frame-right::after,
+.metal-frame-bottom::after,
+.metal-frame-left::after {
+  content: '';
+  position: absolute;
+  background: rgba(0, 0, 0, 0.03);
+  pointer-events: none;
+}
+
+.metal-frame-top::after {
+  bottom: 0;
+  left: var(--frame-thickness-vertical);
+  right: var(--frame-thickness-vertical);
+  height: 1px;
+}
+
+.metal-frame-right::after {
+  left: 0;
+  top: var(--frame-thickness-horizontal);
+  bottom: var(--frame-thickness-horizontal);
+  width: 1px;
+}
+
+.metal-frame-bottom::after {
+  top: 0;
+  left: var(--frame-thickness-vertical);
+  right: var(--frame-thickness-vertical);
+  height: 1px;
+}
+
+.metal-frame-left::after {
+  right: 0;
+  top: var(--frame-thickness-horizontal);
+  bottom: var(--frame-thickness-horizontal);
+  width: 1px;
+}
+
+/* Responsive scaling */
+@media (max-width: 768px) {
+  .metal-frame-container {
+    --frame-thickness-horizontal: 4vw !important;
+    --frame-thickness-vertical: 4vw !important;
+  }
+}
+
+@media (min-width: 1920px) {
+  .metal-frame-container {
+    --frame-thickness-horizontal: 2vw !important;
+    --frame-thickness-vertical: 2vw !important;
+  }
+}
