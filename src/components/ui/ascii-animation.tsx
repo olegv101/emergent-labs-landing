@@ -40,7 +40,8 @@ const noiseFragmentShader = `
   
   void main() {
     vec2 st = vUv * 5.0;
-    float n = noise(st + time * 0.5);
+    // SPEED CONTROL: Lower values = slower movement (was 0.5, now 0.15 for much slower movement)
+    float n = noise(st + time * 0.15);
     
     float brightness = lightness + n * 0.3;
     gl_FragColor = vec4(vec3(brightness), 1.0);
@@ -65,8 +66,10 @@ const AnimatedPlane: FC<AnimatedPlaneProps> = ({ position, rotation, lightness }
     [lightness]
   );
 
+  // SPEED CONTROL: This updates the time uniform every frame - the time value itself drives the animation speed
   useFrame((state) => {
     if (materialRef.current) {
+      // TIME SOURCE: state.clock.getElapsedTime() provides the base time - could multiply by a factor here for global speed control
       materialRef.current.uniforms.time.value = state.clock.getElapsedTime();
     }
   });
