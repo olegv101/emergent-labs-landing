@@ -28,8 +28,8 @@ export default function Home() {
 
   return (
     <>
-      {/* Rainbow Pulse Animation */}
-      <RainbowPulse interval={8000} duration={3000} />
+      {/* Rainbow Pulse Animation - cursor-driven */}
+      <RainbowPulse maxRadius={400} minRadius={100} />
       
       {/* Metal Frame - positioned absolutely around viewport */}
       <MetalFrame 
