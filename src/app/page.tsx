@@ -33,7 +33,7 @@ export default function Home() {
       
       {/* Metal Frame - positioned absolutely around viewport */}
       <MetalFrame 
-        horizontalThickness="6.67vw"
+        horizontalThickness="10vh"
         verticalThickness="10vw"
       />
       
