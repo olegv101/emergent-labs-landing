@@ -39,7 +39,7 @@ export default function Home() {
         />
       </div>
       
-      <div className='min-h-screen flex items-center justify-center bg-[#E0E0E0] flex-col space-y-6 opacity-0 animate-fade-in relative'>
+      <div className='min-h-screen flex items-center justify-center bg-[#ECECEC] flex-col space-y-6 opacity-0 animate-fade-in relative'>
         {/* ASCII Animation Background */}
         <div
           className='overflow-hidden'
@@ -55,7 +55,7 @@ export default function Home() {
           <AsciiAnimation 
             width='80vw' 
             height='80vh'
-            className='opacity-60'
+            className='opacity-50'
           />
         </div>
 
