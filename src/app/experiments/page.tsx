@@ -136,7 +136,7 @@ const Scene: FC = () => {
 const ExperimentsPage: FC = () => {
   return (
     <main style={{ position: "relative", width: "100vw", height: "100vh" }}>
-    <RainbowPulse interval={8000} duration={3000} />
+    <RainbowPulse />
 
       {/* 3D ASCII Background Window */}
       <div
