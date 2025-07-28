@@ -8,6 +8,7 @@ import { ProgressiveBlur } from '@/components/ui/progressive-blur';
 import { SvgLoader } from '@/components/ui/svg-loader';
 import { AsciiAnimation } from '@/components/ui/ascii-animation';
 import { MetalFrame } from '@/components/ui/metal-frame';
+import { RainbowPulse } from '@/components/ui/rainbow-pulse';
 
 const vt323 = VT323({
   weight: '400',
@@ -27,6 +28,9 @@ export default function Home() {
 
   return (
     <>
+      {/* Rainbow Pulse Animation */}
+      <RainbowPulse interval={8000} duration={3000} />
+      
       {/* Metal Frame - positioned absolutely around viewport */}
       <MetalFrame 
         horizontalThickness="6.67vw"
