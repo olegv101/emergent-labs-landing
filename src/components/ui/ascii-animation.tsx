@@ -136,9 +136,9 @@ export const AsciiAnimation: FC<AsciiAnimationProps> = ({
         <AsciiRenderer 
           fgColor='#808080' 
           bgColor='transparent' 
-          characters=' .:-+*=%@#' 
+          characters=' .:-+*=%@\|`^' 
           invert={false}
-          resolution={0.2}
+          resolution={0.16}
         />
       </Canvas>
     </div>

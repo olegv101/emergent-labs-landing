@@ -27,19 +27,21 @@ export default function Home() {
   return (
     <div className='min-h-screen flex items-center justify-center bg-[#E0E0E0] flex-col space-y-6 opacity-0 animate-fade-in relative'>
       {/* ASCII Animation Background */}
-      <div 
-        style={{ 
-          position: 'absolute', 
+      <div
+        className='overflow-hidden'
+        style={{
+          position: 'absolute',
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
           zIndex: 0,
+          boxShadow: 'inset 0 0 25px 5px rgba(0, 0, 0, 0.08)',
         }}
       >
         <AsciiAnimation 
-          width='100vw' 
-          height='100vh'
-          style={{ opacity: 0.3 }}
+          width='80vw' 
+          height='80vh'
+          className='opacity-60'
         />
       </div>
 
