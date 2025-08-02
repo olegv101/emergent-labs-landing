@@ -1,9 +1,17 @@
 'use client';
 
-import { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { createClient } from '@/utils/supabase/client';
-import { MousePointer2 } from 'lucide-react';
+import { MousePointer2, Terminal, FolderOpen, Globe, MessageSquare, FileText, 
+         Table2, StickyNote, Calendar, Mail } from 'lucide-react';
 import type { RealtimeChannel, RealtimePresenceState } from '@supabase/supabase-js';
+import { Dock } from '@/components/ui/dock';
+import { MacWindow } from '@/components/ui/mac-window';
+import { DesktopApp } from '@/components/ui/desktop-app';
+import { TerminalApp } from '@/components/apps/terminal-app';
+import { TextEditApp } from '@/components/apps/text-edit-app';
+import { SpreadsheetApp } from '@/components/apps/spreadsheet-app';
+import { NotesApp } from '@/components/apps/notes-app';
 
 // Types
 interface CursorPosition {
@@ -31,20 +39,98 @@ interface CursorMovePayload {
   y: number;
 }
 
+interface Window {
+  id: string;
+  app: string;
+  title: string;
+  isMinimized: boolean;
+  position: { x: number; y: number };
+  size: { width: number; height: number };
+}
+
+interface App {
+  id: string;
+  name: string;
+  icon: React.ReactNode;
+  component?: React.ReactNode;
+}
+
 // Channel name - using a unique ID to ensure both instances connect to the same channel
 const CHANNEL = 'cursor-tracking-intelligence';
 
-export default function IntelligencePage(): JSX.Element {
+export default function IntelligencePage(): React.JSX.Element {
   const [username, setUsername] = useState<string>('');
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [userCursors, setUserCursors] = useState<Record<string, UserCursor>>({});
-  const [localCursorPosition, setLocalCursorPosition] = useState<CursorPosition>({ x: 0, y: 0 });
+  
+  // Desktop state
+  const [windows, setWindows] = useState<Window[]>([]);
+  const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
+  const [selectedApp, setSelectedApp] = useState<string | null>(null);
   
   const userId = useRef<string>(Math.random().toString(36).substring(2, 15));
   const userColor = useRef<string>(getRandomColor());
   const containerRef = useRef<HTMLDivElement>(null);
   const channelRef = useRef<RealtimeChannel | null>(null);
   const isInitialSetup = useRef<boolean>(true);
+  
+  // App definitions
+  const apps: App[] = [
+    {
+      id: 'finder',
+      name: 'Finder',
+      icon: <FolderOpen className='w-12 h-12 text-blue-500' />,
+      component: <div className='p-4'>Finder coming soon...</div>
+    },
+    {
+      id: 'terminal',
+      name: 'Terminal',
+      icon: <Terminal className='w-12 h-12 text-gray-800' />,
+      component: <TerminalApp />
+    },
+    {
+      id: 'textedit',
+      name: 'TextEdit',
+      icon: <FileText className='w-12 h-12 text-blue-600' />,
+      component: <TextEditApp />
+    },
+    {
+      id: 'numbers',
+      name: 'Numbers',
+      icon: <Table2 className='w-12 h-12 text-green-600' />,
+      component: <SpreadsheetApp />
+    },
+    {
+      id: 'notes',
+      name: 'Notes',
+      icon: <StickyNote className='w-12 h-12 text-yellow-500' />,
+      component: <NotesApp />
+    },
+    {
+      id: 'safari',
+      name: 'Safari',
+      icon: <Globe className='w-12 h-12 text-blue-500' />,
+      component: <iframe src='https://emergent-labs.com' className='w-full h-full' />
+    },
+    {
+      id: 'messages',
+      name: 'Messages',
+      icon: <MessageSquare className='w-12 h-12 text-green-500' />,
+      component: <div className='p-4'>Messages coming soon...</div>
+    },
+    {
+      id: 'calendar',
+      name: 'Calendar',
+      icon: <Calendar className='w-12 h-12 text-red-500' />,
+      component: <div className='p-4'>Calendar coming soon...</div>
+    },
+    {
+      id: 'mail',
+      name: 'Mail',
+      icon: <Mail className='w-12 h-12 text-blue-400' />,
+      component: <div className='p-4'>Mail coming soon...</div>
+    },
+  ];
   
   // Generate a random color for the user
   function getRandomColor(): string {
@@ -54,6 +140,55 @@ export default function IntelligencePage(): JSX.Element {
     ];
     return colors[Math.floor(Math.random() * colors.length)];
   }
+  
+  // Window management functions
+  const openApp = (appId: string) => {
+    const app = apps.find(a => a.id === appId);
+    if (!app) return;
+    
+    const existingWindow = windows.find(w => w.app === appId);
+    if (existingWindow) {
+      setActiveWindowId(existingWindow.id);
+      if (existingWindow.isMinimized) {
+        setWindows(windows.map(w => 
+          w.id === existingWindow.id ? { ...w, isMinimized: false } : w
+        ));
+      }
+      return;
+    }
+    
+    const newWindow: Window = {
+      id: Date.now().toString(),
+      app: appId,
+      title: app.name,
+      isMinimized: false,
+      position: { 
+        x: 100 + windows.length * 30, 
+        y: 100 + windows.length * 30 
+      },
+      size: { width: 800, height: 600 }
+    };
+    
+    setWindows([...windows, newWindow]);
+    setActiveWindowId(newWindow.id);
+  };
+  
+  const closeWindow = (windowId: string) => {
+    setWindows(windows.filter(w => w.id !== windowId));
+    if (activeWindowId === windowId) {
+      setActiveWindowId(null);
+    }
+  };
+  
+  const minimizeWindow = (windowId: string) => {
+    setWindows(windows.map(w => 
+      w.id === windowId ? { ...w, isMinimized: true } : w
+    ));
+  };
+  
+  const bringToFront = (windowId: string) => {
+    setActiveWindowId(windowId);
+  };
   
   // Set up Supabase channel
   useEffect(() => {
@@ -78,18 +213,20 @@ export default function IntelligencePage(): JSX.Element {
       // Update user information in state
       const updatedUserInfo: Record<string, Omit<UserCursor, 'position'>> = {};
       Object.keys(state).forEach((key: string) => {
-        const presences = state[key] as UserInfo[];
-        presences.forEach((presence: UserInfo) => {
-          // Skip our own user info
-          if (presence.user_id === userId.current) return;
-          
-          // Store user info (but not cursor position)
-          updatedUserInfo[presence.user_id] = {
-            username: presence.username,
-            color: presence.color,
-            online_at: presence.online_at
-          };
-        });
+        const presences = state[key] as unknown as UserInfo[];
+        if (Array.isArray(presences)) {
+          presences.forEach((presence: UserInfo) => {
+            // Skip our own user info
+            if (presence.user_id === userId.current) return;
+            
+            // Store user info (but not cursor position)
+            updatedUserInfo[presence.user_id] = {
+              username: presence.username,
+              color: presence.color,
+              online_at: presence.online_at
+            };
+          });
+        }
       });
       
       // Remove users who are no longer present
@@ -109,7 +246,10 @@ export default function IntelligencePage(): JSX.Element {
         // Remove users no longer in presence
         Object.keys(newCursors).forEach((id: string) => {
           const userExists = Object.values(state).some(
-            (presences) => (presences as UserInfo[]).some((presence: UserInfo) => presence.user_id === id)
+            (presences) => {
+              const userInfoArray = presences as unknown as UserInfo[];
+              return Array.isArray(userInfoArray) && userInfoArray.some((presence: UserInfo) => presence.user_id === id);
+            }
           );
           
           if (!userExists) {
@@ -192,96 +332,102 @@ export default function IntelligencePage(): JSX.Element {
     
     const newPosition: CursorPosition = { x: relativeX, y: relativeY };
     
-    // Update local cursor position
-    setLocalCursorPosition(newPosition);
-    
     // Broadcast position to other users
     broadcastCursorPosition(newPosition);
   }, [broadcastCursorPosition]);
   
   return (
     <div 
-      className='flex flex-col h-screen bg-neutral-900 text-white antialiased'
+      className='flex flex-col h-screen bg-gradient-to-br from-blue-50 to-purple-50 antialiased'
       onMouseMove={handleMouseMove}
       ref={containerRef}
-      style={{ cursor: 'none' }} // Hide the native cursor
+      style={{ cursor: 'default' }}
     >
-      {/* Main tracking area with grid background */}
-      <div className='flex-1 overflow-hidden relative'>
-        <div 
-          className='w-full h-full bg-neutral-800 relative'
-          style={{
-            backgroundImage: 'linear-gradient(to right, rgba(75, 85, 99, 0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(75, 85, 99, 0.1) 1px, transparent 1px)',
-            backgroundSize: '40px 40px'
-          }}
-        >
-          {/* Local cursor icon (replacing native cursor) */}
+      {/* Desktop */}
+      <div 
+        className='flex-1 overflow-hidden relative'
+        onClick={() => setSelectedApp(null)}
+      >
+        {/* Desktop Grid for app icons */}
+        <div className='absolute inset-0 p-8 grid grid-cols-8 grid-rows-6 gap-4 auto-rows-min'>
+          {apps.map((app) => (
+            <DesktopApp
+              key={app.id}
+              id={app.id}
+              name={app.name}
+              icon={app.icon}
+              onDoubleClick={() => openApp(app.id)}
+              isSelected={selectedApp === app.id}
+              onSelect={() => setSelectedApp(app.id)}
+            />
+          ))}
+        </div>
+        
+        {/* Windows */}
+        {windows.map((window) => {
+          const app = apps.find(a => a.id === window.app);
+          if (!app || window.isMinimized) return null;
+          
+          return (
+            <MacWindow
+              key={window.id}
+              id={window.id}
+              title={window.title}
+              defaultX={window.position.x}
+              defaultY={window.position.y}
+              defaultWidth={window.size.width}
+              defaultHeight={window.size.height}
+              isActive={activeWindowId === window.id}
+              onClose={() => closeWindow(window.id)}
+              onMinimize={() => minimizeWindow(window.id)}
+              onFocus={() => bringToFront(window.id)}
+            >
+              {app.component}
+            </MacWindow>
+          );
+        })}
+        
+        {/* Render other users' cursors */}
+        {Object.entries(userCursors).map(([id, { position, username: cursorUsername, color }]) => (
           <div
+            key={id}
             className='absolute pointer-events-none flex flex-col items-start'
             style={{ 
-              left: `${localCursorPosition.x}%`, 
-              top: `${localCursorPosition.y}%`,
-              zIndex: 110, // Higher than other cursors
+              left: `${position.x}%`, 
+              top: `${position.y}%`,
+              zIndex: 10000,
               transform: 'translate(-50%, -50%)'
             }}
           >
-            {/* Local cursor trail effect */}
+            {/* Cursor trail effect */}
             <div 
-              className='absolute w-3 h-3 rounded-full opacity-30'
+              className='absolute w-3 h-3 rounded-full opacity-40'
               style={{ 
-                backgroundColor: userColor.current,
+                backgroundColor: color,
                 transform: 'translate(-50%, -50%)',
-                filter: 'blur(2px)'
+                filter: 'blur(3px)'
               }}
             />
             
-            <div style={{ color: userColor.current }}>
+            {/* Cursor icon */}
+            <div style={{ color }}>
               <MousePointer2 strokeWidth={1.5} size={24} className='drop-shadow-md' />
             </div>
-          </div>
-          
-          {/* Render other users' cursors */}
-          {Object.entries(userCursors).map(([id, { position, username: cursorUsername, color }]) => (
+            
+            {/* Username label */}
             <div
-              key={id}
-              className='absolute pointer-events-none flex flex-col items-start'
+              className='mt-2 px-2 py-1 rounded text-xs whitespace-nowrap'
               style={{ 
-                left: `${position.x}%`, 
-                top: `${position.y}%`,
-                zIndex: 100,
-                transform: 'translate(-50%, -50%)'
+                backgroundColor: color,
+                color: '#fff',
+                fontWeight: 500,
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
               }}
             >
-              {/* Cursor trail effect */}
-              <div 
-                className='absolute w-3 h-3 rounded-full opacity-40'
-                style={{ 
-                  backgroundColor: color,
-                  transform: 'translate(-50%, -50%)',
-                  filter: 'blur(3px)'
-                }}
-              />
-              
-              {/* Cursor icon */}
-              <div style={{ color }}>
-                <MousePointer2 strokeWidth={1.5} size={24} className='drop-shadow-md' />
-              </div>
-              
-              {/* Username label */}
-              <div
-                className='mt-2 px-2 py-1 rounded text-xs whitespace-nowrap'
-                style={{ 
-                  backgroundColor: color,
-                  color: '#fff',
-                  fontWeight: 500,
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
-                }}
-              >
-                {cursorUsername}
-              </div>
+              {cursorUsername}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
       
       {/* Connection status */}
@@ -298,7 +444,7 @@ export default function IntelligencePage(): JSX.Element {
         {Object.entries(userCursors).map(([id, { username: cursorUsername, color }]) => (
           <div 
             key={id} 
-            className='flex items-center gap-2 p-1.5 pl-2 pr-3 rounded-full bg-neutral-800 text-neutral-200 text-xs font-medium'
+            className='flex items-center gap-2 p-1.5 pl-2 pr-3 rounded-full bg-white/80 backdrop-blur text-gray-700 text-xs font-medium shadow-sm'
           >
             <div 
               className='w-2 h-2 rounded-full'
@@ -309,7 +455,7 @@ export default function IntelligencePage(): JSX.Element {
         ))}
         {/* Include yourself in the list */}
         <div 
-          className='flex items-center gap-2 p-1.5 pl-2 pr-3 rounded-full bg-neutral-800 text-neutral-200 text-xs font-medium'
+          className='flex items-center gap-2 p-1.5 pl-2 pr-3 rounded-full bg-white/80 backdrop-blur text-gray-700 text-xs font-medium shadow-sm'
         >
           <div 
             className='w-2 h-2 rounded-full'
@@ -318,12 +464,17 @@ export default function IntelligencePage(): JSX.Element {
           {username} (you)
         </div>
       </div>
-      
-      {/* Page title */}
-      <div className='absolute top-4 left-4'>
-        <h1 className='text-2xl font-bold text-white'>Intelligence</h1>
-        <p className='text-sm text-neutral-400'>Real-time cursor tracking</p>
-      </div>
+
+      {/* macOS Dock */}
+      <Dock
+        items={apps.map(app => ({
+          id: app.id,
+          icon: app.icon,
+          label: app.name,
+          onClick: () => openApp(app.id),
+          isActive: windows.some(w => w.app === app.id && !w.isMinimized)
+        }))}
+      />
     </div>
   );
 }
