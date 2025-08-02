@@ -40,7 +40,7 @@ export default function Home() {
       </div>
       
       <div className='min-h-screen flex items-center justify-center bg-[#ECECEC] flex-col space-y-6 opacity-0 animate-fade-in relative'>
-        {/* ASCII Animation Background */}
+        {/* ASCII Animation Background - cursor-driven */}
         <div
           className='overflow-hidden'
           style={{
