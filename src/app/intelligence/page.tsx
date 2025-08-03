@@ -12,6 +12,9 @@ import { TerminalApp } from '@/components/apps/terminal-app';
 import { TextEditApp } from '@/components/apps/text-edit-app';
 import { SpreadsheetApp } from '@/components/apps/spreadsheet-app';
 import { NotesApp } from '@/components/apps/notes-app';
+import { MessagesApp } from '@/components/apps/messages-app';
+import { GmailApp } from '@/components/apps/gmail-app';
+import { CalendarApp } from '@/components/apps/calendar-app';
 import { MacTopBar } from '@/components/ui/mac-top-bar';
 import { CustomCursor } from '@/components/ui/custom-cursor';
 import { AgentCursor } from '@/components/ui/agent-cursor';
@@ -133,19 +136,19 @@ export default function IntelligencePage(): React.JSX.Element {
       id: 'messages',
       name: 'Messages',
       icon: <Image src='/computer-apps/imessages.png' alt='Messages' width={48} height={48} className='w-12 h-12' />,
-      component: <div className='p-4'>Messages coming soon...</div>
+      component: <MessagesApp />
     },
     {
       id: 'calendar',
       name: 'Calendar',
       icon: <Image src='/computer-apps/calendar.png' alt='Calendar' width={48} height={48} className='w-12 h-12' />,
-      component: <div className='p-4'>Calendar coming soon...</div>
+      component: <CalendarApp />
     },
     {
       id: 'mail',
       name: 'Mail',
       icon: <Image src='/computer-apps/gmail.png' alt='Mail' width={48} height={48} className='w-12 h-12' />,
-      component: <div className='p-4'>Mail coming soon...</div>
+      component: <GmailApp />
     },
   ];
   
