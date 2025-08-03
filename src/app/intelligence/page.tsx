@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { createClient } from '@/utils/supabase/client';
-import { MousePointer2 } from 'lucide-react';
+
 import type { RealtimeChannel, RealtimePresenceState } from '@supabase/supabase-js';
 import { Dock } from '@/components/ui/dock';
 import { MacWindow } from '@/components/ui/mac-window';
@@ -13,6 +13,7 @@ import { TextEditApp } from '@/components/apps/text-edit-app';
 import { SpreadsheetApp } from '@/components/apps/spreadsheet-app';
 import { NotesApp } from '@/components/apps/notes-app';
 import { MacTopBar } from '@/components/ui/mac-top-bar';
+import { CustomCursor } from '@/components/ui/custom-cursor';
 
 // Types
 interface CursorPosition {
@@ -416,8 +417,8 @@ export default function IntelligencePage(): React.JSX.Element {
             />
             
             {/* Cursor icon */}
-            <div style={{ color }}>
-              <MousePointer2 strokeWidth={1.5} size={24} className='drop-shadow-md' />
+            <div>
+              <CustomCursor color={color} size={24} />
             </div>
             
             {/* Username label */}
@@ -445,31 +446,14 @@ export default function IntelligencePage(): React.JSX.Element {
         </div>
       )}
       
-      {/* Active users list */}
-      <div className='absolute top-8 right-4 flex gap-2 flex-wrap justify-end'>
-        {Object.entries(userCursors).map(([id, { username: cursorUsername, color }]) => (
-          <div 
-            key={id} 
-            className='flex items-center gap-2 p-1.5 pl-2 pr-3 rounded-full bg-white/80 backdrop-blur text-gray-700 text-xs font-medium shadow-sm'
-          >
-            <div 
-              className='w-2 h-2 rounded-full'
-              style={{ backgroundColor: color }}
-            ></div>
-            {cursorUsername}
+      {/* Friends counter */}
+      {Object.keys(userCursors).length > 0 && (
+        <div className='absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none'>
+          <div className='text-gray-400 text-xs font-medium'>
+            + {Object.keys(userCursors).length} Friends!
           </div>
-        ))}
-        {/* Include yourself in the list */}
-        <div 
-          className='flex items-center gap-2 p-1.5 pl-2 pr-3 rounded-full bg-white/80 backdrop-blur text-gray-700 text-xs font-medium shadow-sm'
-        >
-          <div 
-            className='w-2 h-2 rounded-full'
-            style={{ backgroundColor: userColor.current }}
-          ></div>
-          {username} (you)
         </div>
-      </div>
+      )}
 
       {/* macOS Dock */}
       <Dock
