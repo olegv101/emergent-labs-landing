@@ -9,6 +9,7 @@ interface DockItem {
   label: string;
   onClick?: () => void;
   isActive?: boolean;
+  dataAttr?: Record<string, string>;
 }
 
 interface DockProps {
@@ -40,6 +41,7 @@ const DockItemComponent: React.FC<DockItemProps> = ({ item, isHovered, neighbors
       onMouseEnter={() => onHover(item.id)}
       onMouseLeave={() => onHover(null)}
       onClick={item.onClick}
+      {...item.dataAttr}
     >
       <div className='w-12 h-12 relative'>
         {item.icon}

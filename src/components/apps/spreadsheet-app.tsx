@@ -167,6 +167,7 @@ export const SpreadsheetApp: React.FC<SpreadsheetAppProps> = ({ className }) => 
                   return (
                     <td
                       key={cellId}
+                      data-cell-id={cellId}
                       className={cn(
                         'border border-gray-300 w-24 h-8 p-0 relative',
                         isSelected && 'ring-2 ring-blue-500'

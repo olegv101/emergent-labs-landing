@@ -99,6 +99,7 @@ export const TextEditApp: React.FC<TextEditAppProps> = ({ className }) => {
 
         {/* Format Buttons */}
         <button
+          data-format-bold
           onClick={() => handleFormat('bold')}
           className={cn(
             'p-1.5 rounded hover:bg-gray-200 transition-colors',
