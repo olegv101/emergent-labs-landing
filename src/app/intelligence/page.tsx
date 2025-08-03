@@ -21,6 +21,7 @@ import { AgentCursor } from '@/components/ui/agent-cursor';
 import { AgentController } from '@/lib/agent-controller';
 import { DEMO_WORKFLOWS } from '@/lib/agent-workflows';
 import { VideoPlayer } from '@/components/ui/video-player';
+import { Play } from 'lucide-react';
 
 // Types
 interface CursorPosition {
@@ -155,10 +156,8 @@ export default function IntelligencePage(): React.JSX.Element {
       id: 'videoplayer',
       name: 'Video Player',
       icon: (
-        <div className='w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg'>
-          <svg className='w-7 h-7 text-white' fill='currentColor' viewBox='0 0 20 20'>
-            <path d='M2 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm8 2.5a.5.5 0 00-.8-.4l-3.5 2.6a.5.5 0 000 .8l3.5 2.6a.5.5 0 00.8-.4v-5.2z' />
-          </svg>
+        <div className='w-12 h-12 bg-[#2D2D2D] rounded-xl flex items-center justify-center shadow-lg'>
+          <Play className='w-7 h-7 text-white' />
         </div>
       ),
       component: (
