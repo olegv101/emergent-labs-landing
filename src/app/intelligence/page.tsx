@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
+import Image from 'next/image';
 import { createClient } from '@/utils/supabase/client';
-import { MousePointer2, Terminal, FolderOpen, Globe, MessageSquare, FileText, 
-         Table2, StickyNote, Calendar, Mail } from 'lucide-react';
+import { MousePointer2 } from 'lucide-react';
 import type { RealtimeChannel, RealtimePresenceState } from '@supabase/supabase-js';
 import { Dock } from '@/components/ui/dock';
 import { MacWindow } from '@/components/ui/mac-window';
@@ -12,6 +12,7 @@ import { TerminalApp } from '@/components/apps/terminal-app';
 import { TextEditApp } from '@/components/apps/text-edit-app';
 import { SpreadsheetApp } from '@/components/apps/spreadsheet-app';
 import { NotesApp } from '@/components/apps/notes-app';
+import { MacTopBar } from '@/components/ui/mac-top-bar';
 
 // Types
 interface CursorPosition {
@@ -79,55 +80,55 @@ export default function IntelligencePage(): React.JSX.Element {
     {
       id: 'finder',
       name: 'Finder',
-      icon: <FolderOpen className='w-12 h-12 text-blue-500' />,
+      icon: <Image src='/computer-apps/finder.webp' alt='Finder' width={48} height={48} className='w-12 h-12' />,
       component: <div className='p-4'>Finder coming soon...</div>
     },
     {
       id: 'terminal',
       name: 'Terminal',
-      icon: <Terminal className='w-12 h-12 text-gray-800' />,
+      icon: <Image src='/computer-apps/terminal.webp' alt='Terminal' width={48} height={48} className='w-12 h-12' />,
       component: <TerminalApp />
     },
     {
       id: 'textedit',
       name: 'TextEdit',
-      icon: <FileText className='w-12 h-12 text-blue-600' />,
+      icon: <Image src='/computer-apps/word.png' alt='word' width={48} height={48} className='w-12 h-12' />,
       component: <TextEditApp />
     },
     {
       id: 'numbers',
       name: 'Numbers',
-      icon: <Table2 className='w-12 h-12 text-green-600' />,
+      icon: <Image src='/computer-apps/excel.png' alt='Excel' width={48} height={48} className='w-12 h-12' />,
       component: <SpreadsheetApp />
     },
     {
       id: 'notes',
       name: 'Notes',
-      icon: <StickyNote className='w-12 h-12 text-yellow-500' />,
+      icon: <Image src='/computer-apps/notes.png' alt='Terminal' width={48} height={48} className='w-12 h-12' />,
       component: <NotesApp />
     },
     {
       id: 'safari',
       name: 'Safari',
-      icon: <Globe className='w-12 h-12 text-blue-500' />,
+      icon: <Image src='/computer-apps/safari.png' alt='Safari' width={48} height={48} className='w-12 h-12' />,
       component: <iframe src='https://emergent-labs.com' className='w-full h-full' />
     },
     {
       id: 'messages',
       name: 'Messages',
-      icon: <MessageSquare className='w-12 h-12 text-green-500' />,
+      icon: <Image src='/computer-apps/imessages.png' alt='Messages' width={48} height={48} className='w-12 h-12' />,
       component: <div className='p-4'>Messages coming soon...</div>
     },
     {
       id: 'calendar',
       name: 'Calendar',
-      icon: <Calendar className='w-12 h-12 text-red-500' />,
+      icon: <Image src='/computer-apps/calendar.png' alt='Calendar' width={48} height={48} className='w-12 h-12' />,
       component: <div className='p-4'>Calendar coming soon...</div>
     },
     {
       id: 'mail',
       name: 'Mail',
-      icon: <Mail className='w-12 h-12 text-blue-400' />,
+      icon: <Image src='/computer-apps/gmail.png' alt='Mail' width={48} height={48} className='w-12 h-12' />,
       component: <div className='p-4'>Mail coming soon...</div>
     },
   ];
@@ -338,29 +339,34 @@ export default function IntelligencePage(): React.JSX.Element {
   
   return (
     <div 
-      className='flex flex-col h-screen bg-gradient-to-br from-blue-50 to-purple-50 antialiased'
+      className='flex flex-col h-screen bg-[#ECECEC] antialiased'
       onMouseMove={handleMouseMove}
       ref={containerRef}
       style={{ cursor: 'default' }}
     >
+      {/* macOS Top Bar */}
+      <MacTopBar username={username} />
+      
       {/* Desktop */}
       <div 
         className='flex-1 overflow-hidden relative'
         onClick={() => setSelectedApp(null)}
       >
-        {/* Desktop Grid for app icons */}
-        <div className='absolute inset-0 p-8 grid grid-cols-8 grid-rows-6 gap-4 auto-rows-min'>
-          {apps.map((app) => (
-            <DesktopApp
-              key={app.id}
-              id={app.id}
-              name={app.name}
-              icon={app.icon}
-              onDoubleClick={() => openApp(app.id)}
-              isSelected={selectedApp === app.id}
-              onSelect={() => setSelectedApp(app.id)}
-            />
-          ))}
+        {/* Desktop Grid for app icons - positioned on right side like macOS */}
+        <div className='absolute top-0 right-0 p-4 w-80 h-full'>
+          <div className='grid grid-cols-4 gap-2 content-start h-full'>
+            {apps.map((app) => (
+              <DesktopApp
+                key={app.id}
+                id={app.id}
+                name={app.name}
+                icon={app.icon}
+                onDoubleClick={() => openApp(app.id)}
+                isSelected={selectedApp === app.id}
+                onSelect={() => setSelectedApp(app.id)}
+              />
+            ))}
+          </div>
         </div>
         
         {/* Windows */}
@@ -432,7 +438,7 @@ export default function IntelligencePage(): React.JSX.Element {
       
       {/* Connection status */}
       {!isConnected && (
-        <div className='absolute top-16 left-0 right-0 flex justify-center'>
+        <div className='absolute top-20 left-0 right-0 flex justify-center'>
           <div className='bg-red-500/80 text-white px-4 py-2 rounded-full text-sm'>
             Connecting to Supabase Realtime...
           </div>
@@ -440,7 +446,7 @@ export default function IntelligencePage(): React.JSX.Element {
       )}
       
       {/* Active users list */}
-      <div className='absolute top-4 right-4 flex gap-2 flex-wrap justify-end'>
+      <div className='absolute top-8 right-4 flex gap-2 flex-wrap justify-end'>
         {Object.entries(userCursors).map(([id, { username: cursorUsername, color }]) => (
           <div 
             key={id} 
