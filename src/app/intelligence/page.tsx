@@ -20,6 +20,7 @@ import { CustomCursor } from '@/components/ui/custom-cursor';
 import { AgentCursor } from '@/components/ui/agent-cursor';
 import { AgentController } from '@/lib/agent-controller';
 import { DEMO_WORKFLOWS } from '@/lib/agent-workflows';
+import { VideoPlayer } from '@/components/ui/video-player';
 
 // Types
 interface CursorPosition {
@@ -149,6 +150,42 @@ export default function IntelligencePage(): React.JSX.Element {
       name: 'Mail',
       icon: <Image src='/computer-apps/gmail.png' alt='Mail' width={48} height={48} className='w-12 h-12' />,
       component: <GmailApp />
+    },
+    {
+      id: 'videoplayer',
+      name: 'Video Player',
+      icon: (
+        <div className='w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg'>
+          <svg className='w-7 h-7 text-white' fill='currentColor' viewBox='0 0 20 20'>
+            <path d='M2 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm8 2.5a.5.5 0 00-.8-.4l-3.5 2.6a.5.5 0 000 .8l3.5 2.6a.5.5 0 00.8-.4v-5.2z' />
+          </svg>
+        </div>
+      ),
+      component: (
+        <VideoPlayer 
+          videos={[
+            {
+              id: '1',
+              title: 'Emergent Labs Demo',
+              description: 'Watch the future of AI-powered interfaces',
+              youtubeId: 'SlXHAiPQO3U'
+            },
+            {
+              id: '2',
+              title: 'AI Assistant Showcase',
+              description: 'See how our AI agents navigate complex workflows',
+              youtubeId: 'dQw4w9WgXcQ' // Placeholder - replace with actual video
+            },
+            {
+              id: '3',
+              title: 'Behind the Technology',
+              description: 'Deep dive into the tech stack powering our platform',
+              youtubeId: 'jNQXAC9IVRw' // Placeholder - replace with actual video
+            }
+          ]}
+          className='h-full'
+        />
+      )
     },
   ];
   
@@ -463,15 +500,15 @@ export default function IntelligencePage(): React.JSX.Element {
           >
             <div className='relative'>
               {/* Shadow effect */}
-              <div className='absolute inset-0 bg-black/20 rounded-[28px] blur-xl transform translate-y-4' />
+              <div className='absolute inset-0 bg-black/10 rounded-[28px] blur-xl transform translate-y-4' />
               
               {/* Logo */}
               <Image 
                 src='/computer-apps/applogo.svg' 
                 alt='Emergent Labs' 
-                width={108} 
-                height={108} 
-                className='relative z-10 transition-transform duration-300 group-hover:scale-110'
+                width={78} 
+                height={78} 
+                className='relative z-10 transition-transform duration-300 group-hover:scale-105'
               />
               
               {/* Try me text */}
