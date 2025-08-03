@@ -1,6 +1,21 @@
 'use client';
 
-export type WorkflowActionType = 'move' | 'click' | 'doubleClick' | 'type' | 'wait' | 'drag' | 'moveToDock' | 'moveToApp';
+import { getAppStateStore } from './app-state-store';
+
+export type WorkflowActionType = 
+  | 'move' 
+  | 'click' 
+  | 'doubleClick' 
+  | 'type' 
+  | 'wait' 
+  | 'drag' 
+  | 'moveToDock' 
+  | 'moveToApp'
+  | 'typeInApp'        // Type in a specific app input
+  | 'selectCell'       // Select spreadsheet cell
+  | 'sendMessage'      // Send message in Messages app
+  | 'sendEmail'        // Send email in Gmail
+  | 'executeCommand';  // Execute terminal command
 
 export interface WorkflowAction {
   type: WorkflowActionType;
@@ -9,6 +24,8 @@ export interface WorkflowAction {
   text?: string; // For typing
   duration?: number; // For wait actions (ms)
   speed?: number; // Typing speed (ms per character)
+  appId?: string; // For app-specific actions
+  data?: any; // Additional data for complex actions
 }
 
 export interface Workflow {
@@ -38,6 +55,7 @@ export class AgentController {
   private updateCallback?: (state: AgentState) => void;
   private containerRef?: HTMLElement;
   private isRunning = false;
+  private appStateStore = getAppStateStore();
   
   constructor() {}
   
@@ -193,6 +211,60 @@ export class AgentController {
         case 'drag':
           // TODO: Implement drag functionality
           break;
+          
+        case 'typeInApp':
+          if (action.appId && action.text) {
+            await this.simulateTyping(action.text, action.speed);
+            // Update app state based on app type
+            this.handleAppContentUpdate(action.appId, action.text, action.target);
+          }
+          break;
+          
+        case 'selectCell':
+          if (action.target) {
+            const pos = this.getElementPosition(`[data-cell-id="${action.target}"]`);
+            if (pos) {
+              await this.moveTo(pos.x, pos.y);
+              await this.simulateClick();
+              this.appStateStore.selectCell(action.target);
+            }
+          }
+          break;
+          
+        case 'sendMessage':
+          if (action.data?.conversationId && action.text) {
+            const message = {
+              id: Date.now().toString(),
+              sender: 'AI Agent',
+              content: action.text,
+              timestamp: new Date(),
+              isFromAgent: true
+            };
+            this.appStateStore.sendMessage(action.data.conversationId, message);
+          }
+          break;
+          
+        case 'sendEmail':
+          if (action.data?.email) {
+            const email = {
+              id: Date.now().toString(),
+              from: 'agent@emergentlabs.ai',
+              subject: action.data.email.subject || '',
+              body: action.data.email.body || '',
+              timestamp: new Date(),
+              isRead: false
+            };
+            this.appStateStore.sendEmail(email);
+          }
+          break;
+          
+        case 'executeCommand':
+          if (action.text) {
+            // Simulate command output based on command
+            const output = this.simulateTerminalCommand(action.text);
+            this.appStateStore.executeCommand(action.text, output);
+          }
+          break;
       }
       
       // Small delay between actions for realism
@@ -200,6 +272,65 @@ export class AgentController {
     }
     
     this.isRunning = false;
+  }
+  
+  private handleAppContentUpdate(appId: string, text: string, target?: string): void {
+    switch (appId) {
+      case 'gmail':
+        if (target === 'subject') {
+          this.appStateStore.updateComposingEmail({ subject: text });
+        } else if (target === 'body') {
+          this.appStateStore.updateComposingEmail({ body: text });
+        } else if (target === 'to') {
+          this.appStateStore.updateComposingEmail({ to: text } as any);
+        }
+        break;
+        
+      case 'numbers':
+        if (target) {
+          this.appStateStore.updateCell(target, text);
+        }
+        break;
+        
+      case 'textedit':
+        this.appStateStore.updateDocument('default', text);
+        break;
+        
+      case 'messages':
+        this.appStateStore.updateComposingMessage(text);
+        break;
+        
+      case 'notes':
+        if (this.appStateStore.getState().notes.selectedNoteId) {
+          this.appStateStore.updateNote(
+            this.appStateStore.getState().notes.selectedNoteId,
+            text
+          );
+        }
+        break;
+    }
+  }
+  
+  private simulateTerminalCommand(command: string): string {
+    // Simulate some common command outputs
+    if (command === 'ls') {
+      return 'agent-controller.ts  app-state-store.ts  utils.ts';
+    } else if (command === 'pwd') {
+      return '/Users/agent/projects/emergent-labs';
+    } else if (command.startsWith('cd ')) {
+      return ''; // cd doesn't output anything
+    } else if (command === 'python analyze_data.py') {
+      return `Analyzing data...
+Processing 1000 records...
+Analysis complete:
+- Average performance: 87.3%
+- Peak efficiency: 95.2%
+- Optimization potential: 12.7%`;
+    } else if (command.startsWith('echo ')) {
+      return command.substring(5);
+    } else {
+      return `${command}: command executed successfully`;
+    }
   }
   
   stop() {

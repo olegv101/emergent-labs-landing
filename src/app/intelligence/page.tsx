@@ -8,12 +8,12 @@ import type { RealtimeChannel, RealtimePresenceState } from '@supabase/supabase-
 import { Dock } from '@/components/ui/dock';
 import { MacWindow } from '@/components/ui/mac-window';
 import { DesktopApp } from '@/components/ui/desktop-app';
-import { TerminalApp } from '@/components/apps/terminal-app';
-import { TextEditApp } from '@/components/apps/text-edit-app';
-import { SpreadsheetApp } from '@/components/apps/spreadsheet-app';
+import { TerminalApp } from '@/components/apps/terminal-app-v2';
+import { TextEditApp } from '@/components/apps/text-edit-app-v2';
+import { SpreadsheetApp } from '@/components/apps/spreadsheet-app-v2';
 import { NotesApp } from '@/components/apps/notes-app';
-import { MessagesApp } from '@/components/apps/messages-app';
-import { GmailApp } from '@/components/apps/gmail-app';
+import { MessagesApp } from '@/components/apps/messages-app-v2';
+import { GmailApp } from '@/components/apps/gmail-app-v2';
 import { CalendarApp } from '@/components/apps/calendar-app';
 import { MacTopBar } from '@/components/ui/mac-top-bar';
 import { CustomCursor } from '@/components/ui/custom-cursor';
