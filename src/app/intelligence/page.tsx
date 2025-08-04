@@ -721,8 +721,7 @@ export default function IntelligencePage(): React.JSX.Element {
       <div className='max-w-6xl mx-auto mt-8'>
         <div className='text-center'>
           <p className='text-sm text-gray-500'>
-            Click the Emergent Labs logo to start the AI demonstration. 
-            Watch as our intelligent agent autonomously performs complex workflows.
+            a wip
           </p>
         </div>
       </div>
