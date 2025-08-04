@@ -311,3 +311,13 @@
     --frame-thickness-vertical: 2vw !important;
   }
 }
+
+/* Contained Metal Frame Styles - for use within containers */
+.metal-frame-container.absolute {
+  position: absolute !important;
+  z-index: 10 !important;
+}
+
+.metal-frame-container.absolute .metal-frame {
+  position: absolute !important;
+}

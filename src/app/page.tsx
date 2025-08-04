@@ -9,7 +9,7 @@ import { SvgLoader } from '@/components/ui/svg-loader';
 import { AsciiAnimation } from '@/components/ui/ascii-animation';
 import { MetalFrame } from '@/components/ui/metal-frame';
 import { RainbowPulse } from '@/components/ui/rainbow-pulse';
-
+import Link from 'next/link';
 const vt323 = VT323({
   weight: '400',
   subsets: ['latin'],
@@ -70,7 +70,7 @@ export default function Home() {
                 Emergent
               </span>
 
-              <div className='relative my-2 overflow-hidden rounded-[4px] group-hover:scale-105 transition-all duration-300'>
+              <Link href='/intelligence' className='relative my-2 overflow-hidden rounded-[4px] group-hover:scale-105 transition-all duration-300'>
                 
                 <Image
                   src='/background-emergent-labs.png'
@@ -90,7 +90,7 @@ export default function Home() {
                     </h2>
                   </div>
                 </div>
-              </div>
+              </Link>
 
               <span className='text-end'>Labs</span>
             </h1>

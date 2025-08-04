@@ -21,7 +21,9 @@ import { AgentCursor } from '@/components/ui/agent-cursor';
 import { AgentController } from '@/lib/agent-controller';
 import { DEMO_WORKFLOWS } from '@/lib/agent-workflows';
 import { VideoPlayer } from '@/components/ui/video-player';
+import { MetalFrame } from '@/components/ui/metal-frame';
 import { Play } from 'lucide-react';
+import { VT323 } from 'next/font/google';
 
 // Types
 interface CursorPosition {
@@ -67,6 +69,11 @@ interface App {
 
 // Channel name - using a unique ID to ensure both instances connect to the same channel
 const CHANNEL = 'cursor-tracking-intelligence';
+
+const vt323 = VT323({
+  weight: '400',
+  subsets: ['latin'],
+});
 
 export default function IntelligencePage(): React.JSX.Element {
   const [username, setUsername] = useState<string>('');
@@ -156,8 +163,8 @@ export default function IntelligencePage(): React.JSX.Element {
       id: 'videoplayer',
       name: 'Video Player',
       icon: (
-        <div className='w-12 h-12 bg-[#2D2D2D] rounded-xl flex items-center justify-center shadow-lg'>
-          <Play className='w-7 h-7 text-white' />
+        <div className='w-12 h-10 bg-[#2D2D2D] rounded-xl flex items-center justify-center shadow-lg'>
+          <Play className='w-5 h-5 text-white' />
         </div>
       ),
       component: (
@@ -470,20 +477,46 @@ export default function IntelligencePage(): React.JSX.Element {
   }, [broadcastCursorPosition]);
   
   return (
-    <div 
-      className='flex flex-col h-screen bg-[#ECECEC] antialiased'
-      onMouseMove={handleMouseMove}
-      ref={containerRef}
-      style={{ cursor: 'default' }}
-    >
-      {/* macOS Top Bar */}
-      <MacTopBar username={username} />
-      
-      {/* Desktop */}
-      <div 
-        className='flex-1 overflow-hidden relative'
-        onClick={() => setSelectedApp(null)}
-      >
+    <div className='min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4'>
+      {/* Header Section - Add your explanatory content here */}
+      <div className='max-w-6xl mx-auto mb-8'>
+        <div className='text-center'>
+          <h1 className={`text-4xl font-bold text-gray-900 mb-4 font ${vt323.className}`}>
+            Collective Intelligence
+          </h1>
+          <p className='text-lg text-gray-600 max-w-2xl mx-auto'>
+            You do nearly all your work on a computer. So does your team. We push this work to a shared space, so our agents make sure you don&apos;t do anything twice.
+          </p>
+        </div>
+      </div>
+
+      {/* Computer Frame Container */}
+      <div className='max-w-6xl mx-auto relative'>
+        {/* Computer Frame - positioned relative to this container */}
+        <div className='relative rounded-lg overflow-hidden shadow-2xl' style={{ aspectRatio: '16/10' }}>
+          {/* Metal Frame */}
+          <div className='relative h-full'>
+            <MetalFrame 
+              horizontalThickness='3rem'
+              verticalThickness='3rem'
+              className='!absolute !inset-0 !z-10'
+            />
+            
+            {/* Desktop Content */}
+            <div 
+              className='absolute inset-12 bg-[#ECECEC] antialiased flex flex-col'
+              onMouseMove={handleMouseMove}
+              ref={containerRef}
+              style={{ cursor: 'default' }}
+            >
+              {/* macOS Top Bar */}
+              <MacTopBar username={username} />
+              
+              {/* Desktop */}
+              <div 
+                className='flex-1 overflow-hidden relative'
+                onClick={() => setSelectedApp(null)}
+              >
         {/* Central Logo - Demo Trigger */}
         {!isAgentRunning && !windows.length && (
           <div 
@@ -605,78 +638,94 @@ export default function IntelligencePage(): React.JSX.Element {
           />
         )}
         
-        {/* Render other users' cursors */}
-        {Object.entries(userCursors).map(([id, { position, username: cursorUsername, color }]) => (
-          <div
-            key={id}
-            className='absolute pointer-events-none flex flex-col items-start'
-            style={{ 
-              left: `${position.x}%`, 
-              top: `${position.y}%`,
-              zIndex: 10000,
-              transform: 'translate(-50%, -50%)'
-            }}
-          >
-            {/* Cursor trail effect */}
-            <div 
-              className='absolute w-3 h-3 rounded-full opacity-40'
-              style={{ 
-                backgroundColor: color,
-                transform: 'translate(-50%, -50%)',
-                filter: 'blur(3px)'
-              }}
-            />
-            
-            {/* Cursor icon */}
-            <div>
-              <CustomCursor color={color} size={24} />
-            </div>
-            
-            {/* Username label */}
-            <div
-              className='mt-2 px-2 py-1 rounded text-xs whitespace-nowrap'
-              style={{ 
-                backgroundColor: color,
-                color: '#fff',
-                fontWeight: 500,
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
-              }}
-            >
-              {cursorUsername}
-            </div>
-          </div>
-        ))}
-      </div>
-      
-      {/* Connection status */}
-      {!isConnected && (
-        <div className='absolute top-20 left-0 right-0 flex justify-center'>
-          <div className='bg-red-500/80 text-white px-4 py-2 rounded-full text-sm'>
-            Connecting to Supabase Realtime...
-          </div>
-        </div>
-      )}
-      
-      {/* Friends counter */}
-      {Object.keys(userCursors).length > 0 && (
-        <div className='absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none'>
-          <div className='text-gray-400 text-xs font-medium'>
-            + {Object.keys(userCursors).length} Friends!
-          </div>
-        </div>
-      )}
+                {/* Render other users' cursors */}
+                {Object.entries(userCursors).map(([id, { position, username: cursorUsername, color }]) => (
+                  <div
+                    key={id}
+                    className='absolute pointer-events-none flex flex-col items-start'
+                    style={{ 
+                      left: `${position.x}%`, 
+                      top: `${position.y}%`,
+                      zIndex: 10000,
+                      transform: 'translate(-50%, -50%)'
+                    }}
+                  >
+                    {/* Cursor trail effect */}
+                    <div 
+                      className='absolute w-3 h-3 rounded-full opacity-40'
+                      style={{ 
+                        backgroundColor: color,
+                        transform: 'translate(-50%, -50%)',
+                        filter: 'blur(3px)'
+                      }}
+                    />
+                    
+                    {/* Cursor icon */}
+                    <div>
+                      <CustomCursor color={color} size={24} />
+                    </div>
+                    
+                    {/* Username label */}
+                    <div
+                      className='mt-2 px-2 py-1 rounded text-xs whitespace-nowrap'
+                      style={{ 
+                        backgroundColor: color,
+                        color: '#fff',
+                        fontWeight: 500,
+                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+                      }}
+                    >
+                      {cursorUsername}
+                    </div>
+                  </div>
+                ))}
+                
+                {/* Connection status */}
+                {!isConnected && (
+                  <div className='absolute top-20 left-0 right-0 flex justify-center'>
+                    <div className='bg-red-500/80 text-white px-4 py-2 rounded-full text-sm'>
+                      Connecting to Supabase Realtime...
+                    </div>
+                  </div>
+                )}
+                
+                {/* Friends counter */}
+                {Object.keys(userCursors).length > 0 && (
+                  <div className='absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none'>
+                    <div className='text-gray-400 text-xs font-medium'>
+                      + {Object.keys(userCursors).length} Friends!
+                    </div>
+                  </div>
+                )}
 
-      {/* macOS Dock */}
-      <Dock
-        items={apps.map(app => ({
-          id: app.id,
-          icon: app.icon,
-          label: app.name,
-          onClick: () => openApp(app.id),
-          isActive: windows.some(w => w.app === app.id && !w.isMinimized),
-          dataAttr: { 'data-dock-app-id': app.id }
-        }))}
-      />
+                {/* macOS Dock - positioned at bottom of computer screen */}
+                {/* <div className='absolute bottom-0 left-0 right-0'>
+                  <Dock
+                    items={apps.map(app => ({
+                      id: app.id,
+                      icon: app.icon,
+                      label: app.name,
+                      onClick: () => openApp(app.id),
+                      isActive: windows.some(w => w.app === app.id && !w.isMinimized),
+                      dataAttr: { 'data-dock-app-id': app.id }
+                    }))}
+                  />
+                </div> */}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer Section - Add more explanatory content here */}
+      <div className='max-w-6xl mx-auto mt-8'>
+        <div className='text-center'>
+          <p className='text-sm text-gray-500'>
+            Click the Emergent Labs logo to start the AI demonstration. 
+            Watch as our intelligent agent autonomously performs complex workflows.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
