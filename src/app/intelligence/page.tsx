@@ -22,7 +22,7 @@ import { AgentController } from '@/lib/agent-controller';
 import { DEMO_WORKFLOWS } from '@/lib/agent-workflows';
 import { VideoPlayer } from '@/components/ui/video-player';
 import { MetalFrame } from '@/components/ui/metal-frame';
-import { Play } from 'lucide-react';
+import { Loader2, Play } from 'lucide-react';
 import { VT323 } from 'next/font/google';
 
 // Types
@@ -75,6 +75,15 @@ const vt323 = VT323({
   subsets: ['latin'],
 });
 
+// Configuration for desktop background
+const DESKTOP_CONFIG = {
+  // Set to null or empty string for default gray background
+  // Can be a local path like '/background-image.jpg' or a URL
+  backgroundImage: 'https://images.aeonmedia.co/images/d8e5f6dc-ecdf-44d9-8a24-2fa8d1a77426/v2-final-claude_monet_the_water-lily_pond_national_gallery_london.jpg?top=424&left=0&cropWidth=2992&cropHeight=1683&width=1920&quality=75&format=auto', // Example: change this to your desired background
+  // Fallback color if image fails to load
+  fallbackColor: '#ECECEC'
+};
+
 export default function IntelligencePage(): React.JSX.Element {
   const [username, setUsername] = useState<string>('');
   const [isConnected, setIsConnected] = useState<boolean>(false);
@@ -84,6 +93,9 @@ export default function IntelligencePage(): React.JSX.Element {
   const [windows, setWindows] = useState<Window[]>([]);
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
   const [selectedApp, setSelectedApp] = useState<string | null>(null);
+  
+  // Toggle for app icon text color
+  const useWhiteAppText: boolean = true; // Set to true for white text, false for gray
   
   // Agent state
   const [agentState, setAgentState] = useState<{
@@ -163,8 +175,8 @@ export default function IntelligencePage(): React.JSX.Element {
       id: 'videoplayer',
       name: 'Video Player',
       icon: (
-        <div className='w-12 h-10 bg-[#2D2D2D] rounded-xl flex items-center justify-center shadow-lg'>
-          <Play className='w-5 h-5 text-white' />
+        <div className='w-12 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg'>
+          <Play className='w-5 h-5 text-[#2D2D2D]' />
         </div>
       ),
       component: (
@@ -484,8 +496,8 @@ export default function IntelligencePage(): React.JSX.Element {
           <h1 className={`text-4xl font-bold text-gray-900 mb-4 font ${vt323.className}`}>
             Collective Intelligence
           </h1>
-          <p className='text-lg text-gray-600 max-w-2xl mx-auto'>
-            You do nearly all your work on a computer. So does your team. We push this work to a shared space, so our agents make sure you don&apos;t do anything twice.
+          <p className='text-sm text-gray-600/60 max-w-lg mx-auto'>
+            You do nearly all your work on a computer. So does your team. We extract your worfklows in the background, and sync this work to a shared space. And our agents make sure you don&apos;t do anything twice.
           </p>
         </div>
       </div>
@@ -504,10 +516,19 @@ export default function IntelligencePage(): React.JSX.Element {
             
             {/* Desktop Content */}
             <div 
-              className='absolute inset-12 bg-[#ECECEC] antialiased flex flex-col'
+              className='absolute inset-12 antialiased flex flex-col'
               onMouseMove={handleMouseMove}
               ref={containerRef}
-              style={{ cursor: 'default' }}
+              style={{ 
+                cursor: 'default',
+                backgroundColor: DESKTOP_CONFIG.fallbackColor,
+                ...(DESKTOP_CONFIG.backgroundImage && {
+                  backgroundImage: `url(${DESKTOP_CONFIG.backgroundImage})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat'
+                })
+              }}
             >
               {/* macOS Top Bar */}
               <MacTopBar username={username} />
@@ -595,6 +616,7 @@ export default function IntelligencePage(): React.JSX.Element {
                   onDoubleClick={() => openApp(app.id)}
                   isSelected={selectedApp === app.id}
                   onSelect={() => setSelectedApp(app.id)}
+                  useWhiteText={useWhiteAppText}
                 />
               </div>
             ))}
@@ -682,9 +704,9 @@ export default function IntelligencePage(): React.JSX.Element {
                 
                 {/* Connection status */}
                 {!isConnected && (
-                  <div className='absolute top-20 left-0 right-0 flex justify-center'>
-                    <div className='bg-red-500/80 text-white px-4 py-2 rounded-full text-sm'>
-                      Connecting to Supabase Realtime...
+                  <div className='absolute top-8 left-0 right-0 flex justify-center'>
+                    <div className='bg-gray-300/80 text-white px-4 py-2 rounded-full text-sm'>
+                      <Loader2 className='w-4 h-4 animate-spin' />
                     </div>
                   </div>
                 )}

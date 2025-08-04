@@ -10,6 +10,7 @@ interface DesktopAppProps {
   onDoubleClick: () => void;
   isSelected?: boolean;
   onSelect?: () => void;
+  useWhiteText?: boolean; // Controls if the text below the icon is white
 }
 
 export const DesktopApp: React.FC<DesktopAppProps> = ({
@@ -19,6 +20,7 @@ export const DesktopApp: React.FC<DesktopAppProps> = ({
   onDoubleClick,
   isSelected = false,
   onSelect,
+  useWhiteText = false,
 }) => {
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -45,7 +47,7 @@ export const DesktopApp: React.FC<DesktopAppProps> = ({
       </div>
       <span className={cn(
         'text-xs text-center max-w-[80px] px-1 py-0.5 rounded',
-        isSelected ? 'bg-blue-500 text-white' : 'text-gray-700'
+        isSelected ? 'bg-blue-500 text-white' : useWhiteText ? 'text-white' : 'text-gray-700'
       )}>
         {name}
       </span>
