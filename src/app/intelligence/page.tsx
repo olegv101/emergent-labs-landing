@@ -565,7 +565,7 @@ export default function IntelligencePage(): React.JSX.Element {
               />
               
               {/* Try me text */}
-              <p className='text-center mt-4 text-sm text-gray-500 font-medium group-hover:text-gray-700 transition-colors'>
+              <p className='text-center mt-4 text-sm text-white font-medium group-hover:text-gray-700 transition-colors'>
                 try me!
               </p>
             </div>
@@ -714,7 +714,7 @@ export default function IntelligencePage(): React.JSX.Element {
                 {/* Friends counter */}
                 {Object.keys(userCursors).length > 0 && (
                   <div className='absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none'>
-                    <div className='text-gray-400 text-xs font-medium'>
+                    <div className='text-white text-xs font-medium'>
                       + {Object.keys(userCursors).length} Friends!
                     </div>
                   </div>
