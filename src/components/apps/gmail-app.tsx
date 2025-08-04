@@ -4,9 +4,8 @@ import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { 
   Inbox, Star, Send, FileText, Trash2, Archive, Shield, 
-  Menu, Search, Settings, HelpCircle, ChevronDown,
-  Pencil, Reply, Forward, MoreVertical, Clock,
-  Paperclip, Smile, Image as ImageIcon
+  Menu, Search, Settings, HelpCircle, MoreVertical,
+  Pencil, Reply, Forward, Paperclip, Smile, Image as ImageIcon
 } from 'lucide-react';
 
 interface Email {
@@ -305,7 +304,7 @@ export const GmailApp: React.FC<GmailAppProps> = ({ className }) => {
                     <Archive className='w-4 h-4' />
                   </button>
                   <button className='p-2 hover:bg-gray-100 rounded-lg'>
-                    <Spam className='w-4 h-4' />
+                    <Shield className='w-4 h-4' />
                   </button>
                   <button className='p-2 hover:bg-gray-100 rounded-lg'>
                     <Trash2 className='w-4 h-4' />

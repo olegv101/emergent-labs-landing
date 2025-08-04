@@ -212,7 +212,7 @@ export const CalendarApp: React.FC<CalendarAppProps> = ({ className }) => {
 
         {/* Upcoming Events */}
         <div>
-          <div className='text-sm font-medium mb-3'>Today\'s Events</div>
+          <div className='text-sm font-medium mb-3'>Today&apos;s Events</div>
           <div className='space-y-2'>
             {getEventsForDate(new Date()).map(event => (
               <div

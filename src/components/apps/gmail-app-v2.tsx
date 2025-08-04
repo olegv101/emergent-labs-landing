@@ -35,6 +35,7 @@ export const GmailApp: React.FC<GmailAppProps> = ({ className }) => {
       sendEmail({
         id: Date.now().toString(),
         from: 'agent@emergentlabs.ai',
+        to: composing.to || '',
         subject: composing.subject || '',
         body: composing.body || '',
         timestamp: new Date(),
@@ -190,7 +191,7 @@ export const GmailApp: React.FC<GmailAppProps> = ({ className }) => {
                   type='email'
                   placeholder='To'
                   value={composing?.to || ''}
-                  onChange={(e) => updateComposingEmail({ to: e.target.value } as any)}
+                  onChange={(e) => updateComposingEmail({ to: e.target.value })}
                   className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
                 />
                 <input

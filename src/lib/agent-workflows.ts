@@ -170,7 +170,7 @@ export const DEMO_WORKFLOWS: Workflow[] = [
       { type: 'click' },
       { type: 'typeInApp', appId: 'messages', text: 'Team meeting at 3pm today! Please confirm attendance.', speed: 70 },
       { type: 'wait', duration: 500 },
-      { type: 'sendMessage', text: 'Team meeting at 3pm today! Please confirm attendance.', data: { conversationId: 'team' } },
+      { type: 'sendMessage', text: 'Team meeting at 3pm today! Please confirm attendance.', data: { type: 'message', conversationId: 'team' } },
       { type: 'wait', duration: 1000 },
       
       // Open Gmail
@@ -185,6 +185,7 @@ export const DEMO_WORKFLOWS: Workflow[] = [
       
       // Send meeting reminder email
       { type: 'sendEmail', data: { 
+        type: 'email',
         email: {
           subject: 'Team Meeting Reminder - 3pm Today',
           body: 'Hi team,\\n\\nThis is a reminder about our team meeting at 3pm today. We\'ll be discussing:\\n- Q4 roadmap\\n- AI agent integration progress\\n- Customer feedback\\n\\nSee you there!\\n\\nBest,\\nAI Agent'

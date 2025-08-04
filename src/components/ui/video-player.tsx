@@ -15,15 +15,45 @@ interface VideoPlayerProps {
   className?: string;
 }
 
+type YTPlayer = {
+  playVideo: () => void;
+  pauseVideo: () => void;
+  getCurrentTime: () => number;
+  seekTo: (seconds: number, allowSeekAhead: boolean) => void;
+  destroy: () => void;
+};
+
+type YTPlayerConstructor = {
+  new (element: HTMLElement, options: {
+    videoId: string;
+    playerVars: Record<string, unknown>;
+    events: {
+      onReady: () => void;
+      onStateChange: (event: { data: number }) => void;
+    };
+  }): YTPlayer;
+  State: {
+    PLAYING: number;
+    PAUSED: number;
+  };
+};
+
+type YTWindow = typeof window & {
+  YT: {
+    Player: YTPlayerConstructor;
+  };
+  onYouTubeIframeAPIReady?: () => void;
+};
+
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videos, className }) => {
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const playerRef = useRef<any>(null);
+  const playerRef = useRef<YTPlayer | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | undefined>(undefined);
 
   const currentVideo = videos[currentVideoIndex];
 
@@ -79,9 +109,9 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videos, className }) =
     firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
 
     // Initialize player when API is ready
-    (window as any).onYouTubeIframeAPIReady = () => {
+    (window as YTWindow).onYouTubeIframeAPIReady = () => {
       if (iframeRef.current) {
-        playerRef.current = new (window as any).YT.Player(iframeRef.current, {
+        playerRef.current = new (window as YTWindow).YT.Player(iframeRef.current, {
           videoId: currentVideo.youtubeId,
           playerVars: {
             controls: 0,
@@ -97,10 +127,10 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ videos, className }) =
             onReady: () => {
               setIsLoading(false);
             },
-            onStateChange: (event: any) => {
-              if (event.data === (window as any).YT.PlayerState.PLAYING) {
+            onStateChange: (event: { data: number }) => {
+              if (event.data === (window as YTWindow).YT.Player.State.PLAYING) {
                 setIsPlaying(true);
-              } else if (event.data === (window as any).YT.PlayerState.PAUSED) {
+              } else if (event.data === (window as YTWindow).YT.Player.State.PAUSED) {
                 setIsPlaying(false);
               }
             },

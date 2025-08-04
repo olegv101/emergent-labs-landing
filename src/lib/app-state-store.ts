@@ -6,6 +6,7 @@
 export interface EmailMessage {
   id: string;
   from: string;
+  to: string;
   subject: string;
   body: string;
   timestamp: Date;
@@ -98,15 +99,17 @@ const initialState: AppState = {
       {
         id: '1',
         from: 'team@emergentlabs.ai',
+        to: 'user@emergentlabs.ai',
         subject: 'Welcome to Emergent Labs!',
-        body: 'Welcome to the future of AI agents. Our autonomous systems are ready to transform your workflow.',
-        timestamp: new Date(Date.now() - 3600000),
+        body: 'We are excited to have you on board.',
+        timestamp: new Date(),
         isRead: false
       },
       {
         id: '2',
         from: 'research@ai-conference.com',
-        subject: 'AI Conference 2024 - Speaker Invitation',
+        to: 'user@emergentlabs.ai',
+        subject: 'AI Conference 202y - Speaker Invitation',
         body: 'We would be honored to have you speak at our upcoming conference about autonomous agents.',
         timestamp: new Date(Date.now() - 7200000),
         isRead: true

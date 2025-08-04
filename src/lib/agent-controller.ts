@@ -17,6 +17,13 @@ export type WorkflowActionType =
   | 'sendEmail'        // Send email in Gmail
   | 'executeCommand';  // Execute terminal command
 
+type ComposingEmail = { to?: string; subject?: string; body?: string };
+type WorkflowActionData =
+  | { type: 'email'; email: { subject?: string; body?: string; to?: string } }
+  | { type: 'message'; conversationId: string }
+  | { type: 'cell'; cell?: string; value?: string }
+  | { type: 'generic'; [key: string]: unknown };
+
 export interface WorkflowAction {
   type: WorkflowActionType;
   target?: string; // Element selector or app ID
@@ -25,7 +32,7 @@ export interface WorkflowAction {
   duration?: number; // For wait actions (ms)
   speed?: number; // Typing speed (ms per character)
   appId?: string; // For app-specific actions
-  data?: any; // Additional data for complex actions
+  data?: WorkflowActionData; // Additional data for complex actions
 }
 
 export interface Workflow {
@@ -232,7 +239,7 @@ export class AgentController {
           break;
           
         case 'sendMessage':
-          if (action.data?.conversationId && action.text) {
+          if (action.data?.type === 'message' && action.text) {
             const message = {
               id: Date.now().toString(),
               sender: 'AI Agent',
@@ -245,10 +252,11 @@ export class AgentController {
           break;
           
         case 'sendEmail':
-          if (action.data?.email) {
+          if (action.data?.type === 'email') {
             const email = {
               id: Date.now().toString(),
               from: 'agent@emergentlabs.ai',
+              to: action.data.email.to || '',
               subject: action.data.email.subject || '',
               body: action.data.email.body || '',
               timestamp: new Date(),
@@ -282,7 +290,7 @@ export class AgentController {
         } else if (target === 'body') {
           this.appStateStore.updateComposingEmail({ body: text });
         } else if (target === 'to') {
-          this.appStateStore.updateComposingEmail({ to: text } as any);
+          this.appStateStore.updateComposingEmail({ to: text } as ComposingEmail);
         }
         break;
         
@@ -301,11 +309,9 @@ export class AgentController {
         break;
         
       case 'notes':
-        if (this.appStateStore.getState().notes.selectedNoteId) {
-          this.appStateStore.updateNote(
-            this.appStateStore.getState().notes.selectedNoteId,
-            text
-          );
+        const selectedNoteId = this.appStateStore.getState().notes.selectedNoteId;
+        if (selectedNoteId) {
+          this.appStateStore.updateNote(selectedNoteId, text);
         }
         break;
     }

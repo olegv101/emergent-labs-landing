@@ -97,7 +97,7 @@ Analysis complete:
         {/* Terminal header */}
         <div className='mb-4'>
           <div className='text-green-500'>Emergent Labs Terminal v1.0.0</div>
-          <div className='text-green-500'>Type 'help' for available commands</div>
+          <div className='text-green-500'>Type &apos;help&apos; for available commands</div>
           <div className='text-green-500'>{'─'.repeat(50)}</div>
         </div>
         
